@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books Query Form</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace; /* Monospace font */
+            background-color: #000000; /* Black background */
+            color: #00ff00; /* Green text */
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        form {
+            margin: auto;
+            padding: 20px;
+            display: inline-block;
+            text-align: left;
+        }
+
+        label, input, select {
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        input[type="text"], select {
+            background-color: #333;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+        }
+
+        input[type="submit"] {
+            background-color: #333;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #222;
+        }
+        #resultsBox {
+            background-color: #333; /* Dark background */
+            color: #00ff00; /* Green text */
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #00ff00; /* Green border */
+            white-space: pre-wrap; /* Preserves whitespace and wraps text */
+            text-align: left;
+            overflow-x: auto; /* Adds horizontal scrollbar if needed */
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            const queryTypeSelect = document.getElementById('queryType');
+            const filterDiv = document.getElementById('filterDiv');
+
+            function handleQueryTypeChange() {
+                if (queryTypeSelect.value === 'random') {
+                    filterDiv.style.display = 'none';
+                } else {
+                    filterDiv.style.display = 'block';
+                }
+            }
+
+            // Event listener for changes on the query type dropdown
+            queryTypeSelect.addEventListener('change', handleQueryTypeChange);
+
+            // Initial check
+            handleQueryTypeChange();
+        };
+    </script>
+</head>
+<body>
+    <form action="/book-search" method="get">
+        <label for="queryType">Choose your query:</label>
+        <select name="queryType" id="queryType">
+            <option value="random">Get a Random Book</option>
+            <option value="genre">Filter by Genre</option>
+            <option value="author">Filter by Author</option>
+        </select>
+
+        <div id="filterDiv">
+            <label for="filterValue">Genre/Author:</label>
+            <input type="text" id="filterValue" name="filterValue" placeholder="Enter Genre or Author">
+        </div>
+        
+        <input type="submit" value="Get Books">
+    </form>
+    <div id="results">
+        <div id="resultsBox">
+            {% if books_data %}
+                <pre>{{ books_data|tojson(indent=2) }}</pre>
+            {% elif error_message %}
+                <p>{{ error_message }}</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
